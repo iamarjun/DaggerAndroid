@@ -1,13 +1,16 @@
 package com.example.daggerandroid.ui.auth
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import com.example.daggerandroid.model.User
 import com.example.daggerandroid.network.auth.AuthApi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class AuthViewModel @Inject constructor(private val authApi: AuthApi): ViewModel() {
+
+    private val authUser = MediatorLiveData<User>()
 
     init {
         Log.d(TAG, "AuthViewModel: ViewModel is working...")
@@ -17,19 +20,27 @@ class AuthViewModel @Inject constructor(private val authApi: AuthApi): ViewModel
         else
             Log.d(TAG, "AuthViewModel: AuthiApi is NOT NULL...")
 
-        authApi.getUser("1")
-            .toObservable()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext {
-                Log.d(TAG, "onNext: ${it.email}")
-            }
-            .doOnError {
-                Log.d(TAG, "onError: ${it.message}")
-            }
-            .subscribe({}, {})
+
     }
 
+    fun authenticateWithId(id: String) {
+        val source = LiveDataReactiveStreams.fromPublisher<User>(
+            authApi.getUser(id)
+                .subscribeOn(Schedulers.io())
+        )
+
+        authUser.addSource(source, object : Observer<User> {
+            override fun onChanged(t: User?) {
+                authUser.value = t
+                authUser.removeSource(source)
+            }
+
+        })
+    }
+
+    fun observerUser(): LiveData<User> {
+        return authUser
+    }
     companion object {
         private const val TAG = "AuthViewModel"
     }
