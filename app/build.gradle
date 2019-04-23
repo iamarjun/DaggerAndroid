@@ -44,7 +44,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
 
     // ViewModel and LiveData
-    def lifecycle_version = '2.1.0-alpha03'
+    def lifecycle_version = '2.1.0-alpha04'
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
 
     // Dagger
