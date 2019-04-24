@@ -4,19 +4,19 @@ import com.google.gson.annotations.SerializedName
 
 data class User(
     @SerializedName("address")
-    val address: Address,
+    val address: Address?,
     @SerializedName("company")
-    val company: Company,
+    val company: Company?,
     @SerializedName("email")
-    val email: String,
+    val email: String?,
     @SerializedName("id")
-    val id: Int,
+    val id: Int?,
     @SerializedName("name")
-    val name: String,
+    val name: String?,
     @SerializedName("phone")
-    val phone: String,
+    val phone: String?,
     @SerializedName("username")
-    val username: String,
+    val username: String?,
     @SerializedName("website")
-    val website: String
+    val website: String?
 )

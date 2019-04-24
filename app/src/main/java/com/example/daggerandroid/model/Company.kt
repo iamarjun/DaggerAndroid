@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class Company(
     @SerializedName("bs")
-    val bs: String,
+    val bs: String?,
     @SerializedName("catchPhrase")
-    val catchPhrase: String,
+    val catchPhrase: String?,
     @SerializedName("name")
-    val name: String
+    val name: String?
 )
