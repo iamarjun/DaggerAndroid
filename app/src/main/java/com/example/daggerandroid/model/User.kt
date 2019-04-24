@@ -2,21 +2,19 @@ package com.example.daggerandroid.model
 
 import com.google.gson.annotations.SerializedName
 
-data class User(
-    @SerializedName("address")
-    val address: Address,
-    @SerializedName("company")
-    val company: Company,
+class User {
     @SerializedName("email")
-    val email: String,
+    var email: String? = null
     @SerializedName("id")
-    val id: Int,
+    var id: Int? = null
     @SerializedName("name")
-    val name: String,
+    var name: String? = null
     @SerializedName("phone")
-    val phone: String,
+    var phone: String? = null
     @SerializedName("username")
-    val username: String,
+    var username: String? = null
     @SerializedName("website")
-    val website: String
-)
+    var website: String? = null
+}
+
+

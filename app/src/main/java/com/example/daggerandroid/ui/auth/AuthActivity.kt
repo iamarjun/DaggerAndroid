@@ -4,6 +4,8 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.RequestManager
@@ -46,10 +48,39 @@ class AuthActivity : DaggerAppCompatActivity() {
         subscribeObserver()
     }
 
+    private fun showProgress(visibility: Boolean) {
+        if (visibility)
+            progress_bar.visibility = View.VISIBLE
+        else
+            progress_bar.visibility = View.GONE
+    }
+
     private fun subscribeObserver() {
-        viewModel.observerUser().observe(this, Observer<User> { t ->
+        viewModel.observerUser().observe(this, Observer<AuthResource<User>> { t ->
             t?.let {
-                Log.d(TAG, "onChanged: ${it.email}")
+                when (it.status) {
+
+                    AuthResource.AuthStatus.LOADING -> {
+                        showProgress(true)
+                    }
+                    AuthResource.AuthStatus.AUTHENTICATED -> {
+                        showProgress(false)
+                        Log.d(TAG, "onChanged: ${it.data!!.email}")
+                        Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+
+                    }
+                    AuthResource.AuthStatus.ERROR -> {
+                        showProgress(false)
+                        Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+
+                    }
+                    AuthResource.AuthStatus.NOT_AUTHENTICATED -> {
+                        showProgress(false)
+
+                    }
+
+                }
+
             }
         })
     }
