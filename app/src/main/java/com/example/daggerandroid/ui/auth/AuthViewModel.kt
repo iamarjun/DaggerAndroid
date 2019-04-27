@@ -3,17 +3,16 @@ package com.example.daggerandroid.ui.auth
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
+import com.example.daggerandroid.SessionManager
 import com.example.daggerandroid.model.User
 import com.example.daggerandroid.network.auth.AuthApi
 import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class AuthViewModel @Inject constructor(private val authApi: AuthApi) : ViewModel() {
-
-    private val authUser = MediatorLiveData<AuthResource<User>>()
+class AuthViewModel @Inject constructor(private val authApi: AuthApi, private val sessionManager: SessionManager) :
+    ViewModel() {
 
     init {
         Log.d(TAG, "AuthViewModel: ViewModel is working...")
@@ -21,9 +20,12 @@ class AuthViewModel @Inject constructor(private val authApi: AuthApi) : ViewMode
 
     fun authenticateWithId(id: String) {
 
-        authUser.value = AuthResource.loading(null)
+        sessionManager.authenticateWithId(queryUserId(id))
+    }
 
-        val source = LiveDataReactiveStreams.fromPublisher<AuthResource<User>>(
+    private fun queryUserId(id: String): LiveData<AuthResource<User>> {
+
+        return LiveDataReactiveStreams.fromPublisher<AuthResource<User>>(
             authApi.getUser(id)
                 .onErrorReturn {
                     val user = User()
@@ -38,15 +40,10 @@ class AuthViewModel @Inject constructor(private val authApi: AuthApi) : ViewMode
                 })
                 .subscribeOn(Schedulers.io())
         )
-
-        authUser.addSource(source) {
-            authUser.value = it
-            authUser.removeSource(source)
-        }
     }
 
-    fun observerUser(): LiveData<AuthResource<User>> {
-        return authUser
+    fun observerAuthState(): LiveData<AuthResource<User>> {
+        return sessionManager.getAuthUser()
     }
 
     companion object {
@@ -54,3 +51,4 @@ class AuthViewModel @Inject constructor(private val authApi: AuthApi) : ViewMode
     }
 
 }
+

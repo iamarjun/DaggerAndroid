@@ -1,14 +1,15 @@
 package com.example.daggerandroid.ui.auth
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.RequestManager
+import com.example.daggerandroid.MainActivity
 import com.example.daggerandroid.R
 import com.example.daggerandroid.model.User
 import com.example.daggerandroid.viewmodel.ViewModelProviderFactory
@@ -56,7 +57,7 @@ class AuthActivity : DaggerAppCompatActivity() {
     }
 
     private fun subscribeObserver() {
-        viewModel.observerUser().observe(this, Observer<AuthResource<User>> { t ->
+        viewModel.observerAuthState().observe(this, Observer<AuthResource<User>> { t ->
             t?.let {
                 when (it.status) {
 
@@ -65,7 +66,7 @@ class AuthActivity : DaggerAppCompatActivity() {
                     }
                     AuthResource.AuthStatus.AUTHENTICATED -> {
                         showProgress(false)
-                        Log.d(TAG, "onChanged: ${it.data!!.email}")
+                        onLoginSuccess()
                         Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
 
                     }
@@ -83,6 +84,11 @@ class AuthActivity : DaggerAppCompatActivity() {
 
             }
         })
+    }
+
+    private fun onLoginSuccess() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 
     private fun setLogo() {
