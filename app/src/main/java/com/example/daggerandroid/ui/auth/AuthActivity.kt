@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.RequestManager
-import com.example.daggerandroid.MainActivity
+import com.example.daggerandroid.ui.main.MainActivity
 import com.example.daggerandroid.R
 import com.example.daggerandroid.model.User
 import com.example.daggerandroid.viewmodel.ViewModelProviderFactory
